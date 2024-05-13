@@ -2,4 +2,4 @@
 postgres_data
 .env
 __pycache__
-
+static
