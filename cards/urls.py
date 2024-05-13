@@ -1,6 +1,8 @@
 from django.urls import path
 from cards.views import (
-    CardList, CardDetail, DeckList, DeckDetail, DeckCardList
+    CardList, CardDetail,
+    DeckList, DeckDetail, DeckCardList,
+    AbilityList,
 )
 
 urlpatterns = [
@@ -9,4 +11,5 @@ urlpatterns = [
     path('decks/', DeckList.as_view(), name="deck_list"),
     path('decks/<int:pk>', DeckDetail.as_view(), name="deck_detail"),
     path('decks/<int:pk>/cards', DeckCardList.as_view(), name="deck_card_list"),
+    path('abilities/', AbilityList.as_view(), name="ability_list")
 ]
