@@ -1,0 +1,17 @@
+version: '3.0'
+
+include:
+  - infra.yml
+services:
+  main:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: 'db'
+    command: 'daphne -b :: ${APP_NAME}.asgi:application'
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
