@@ -7,6 +7,9 @@ from cards.serializers import (
 )
 from rest_framework import status
 from rest_framework.views import Response
+from django.db import transaction
+
+from auth.permissions import IsAdminOrOwningUserOrAnonReadOnly
 
 
 class DeckList(generics.ListCreateAPIView):
@@ -99,3 +102,48 @@ class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
+
+
+class UserFavoritesList(generics.ListAPIView):
+    def get_queryset(self):
+        return User.objects.get(username=self.kwargs['username']).deck_set.all()
+
+    serializer_class = DeckSerializer
+
+
+class UserFavoritesDetail(generics.RetrieveAPIView):
+    permission_classes = [IsAdminOrOwningUserOrAnonReadOnly]
+
+    def get_queryset(self):
+        return User.objects.get(username=self.kwargs['username']).deck_set.all()
+
+    serializer_class = DeckSerializer
+    lookup_field = 'pk'
+
+    def put(self, request, username, pk):
+        user = User.objects.get(username=username)
+        self.check_object_permissions(request, user)
+        deck = Deck.objects.get(pk=pk)
+        if user.deck_set.filter(pk=pk).exists():
+            return Response({
+                "message": f"Deck {pk} is already in {username}'s favorites"
+            })
+
+        user.deck_set.add(deck)
+        return Response({
+            "message": f"Added deck {pk} to {username}'s favorites"
+        })
+
+    def delete(self, request, username, pk):
+        user = User.objects.get(username=username)
+        self.check_object_permissions(request, user)
+        deck = Deck.objects.get(pk=pk)
+        if not user.deck_set.filter(pk=pk).exists():
+            return Response({
+                "message": f"Deck {pk} is not in {username}'s favorites"
+            })
+
+        user.deck_set.remove(deck)
+        return Response({
+            "message": f"Removed deck {pk} from {username}'s favorites"
+        })

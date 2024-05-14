@@ -4,6 +4,7 @@ from cards.views import (
     DeckList, DeckDetail, DeckCardList,
     AbilityList, AbilityDetail,
     UserList, UserDetail,
+    UserFavoritesList, UserFavoritesDetail,
 )
 
 urlpatterns = [
@@ -16,4 +17,10 @@ urlpatterns = [
     path('abilities/<int:pk>', AbilityDetail.as_view(), name="ability_detail"),
     path('users/', UserList.as_view(), name="user_list"),
     path('users/<str:username>', UserDetail.as_view(), name="user_detail"),
+    path('users/<str:username>/favorites',
+         UserFavoritesList.as_view(),
+         name="user_favorites_list"),
+    path('users/<str:username>/favorites/<int:pk>',
+         UserFavoritesDetail.as_view(),
+         name="user_favorites_detail"),
 ]
