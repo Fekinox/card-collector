@@ -18,6 +18,9 @@ from datetime import timedelta
 
 import os
 
+import dj_database_url
+import django_heroku
+
 env = environ.Env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -68,7 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'cardcollector.urls'
@@ -96,13 +100,15 @@ WSGI_APPLICATION = 'cardcollector.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'cardcollector',
-        'USER': 'postgres',
-        'HOST': env('POSTGRES_HOST', default='localhost'),
-        'PASSWORD': env('POSTGRES_PASSWORD', default='unsafe-password'),
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'cardcollector',
+    #     'USER': 'postgres',
+    #     'HOST': env('POSTGRES_HOST', default='localhost'),
+    #     'PASSWORD': env('POSTGRES_PASSWORD', default='unsafe-password'),
+    # }
+    'default':
+        dj_database_url.config('DATABASE_URL') 
 }
 
 
@@ -178,3 +184,5 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
+
+django_heroku.settings(locals())
