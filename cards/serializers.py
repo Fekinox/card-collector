@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from cards.models import Card, Deck, Ability
 
 
@@ -33,3 +34,11 @@ class DeckSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deck
         fields = ['id', 'name', 'cards']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    decks = DeckSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'decks']

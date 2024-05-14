@@ -3,6 +3,7 @@ from django.db import models
 
 class Deck(models.Model):
     name = models.CharField(max_length=100)
+    users = models.ManyToManyField('auth.User')
 
 
 class Card(models.Model):

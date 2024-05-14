@@ -1,7 +1,9 @@
 from rest_framework import generics
 from cards.models import Card, Deck, Ability
+from django.contrib.auth.models import User
 from cards.serializers import (
-    CardSerializer, DeckSerializer, SubCardSerializer, AbilitySerializer
+    CardSerializer, DeckSerializer, SubCardSerializer, AbilitySerializer,
+    UserSerializer,
 )
 from rest_framework import status
 from rest_framework.views import Response
@@ -35,7 +37,13 @@ class DeckList(generics.ListCreateAPIView):
             new_card = Card.objects.create(deck=deck, **card)
 
             for ability in ability_elem:
-                new_ability, created = Ability.objects.get_or_create(name=ability['name'], defaults=ability)
+                # If an ability already exists with the given name, retrieve it.
+                # Otherwise, create a new ability with the same name and the
+                # given description.
+                new_ability, created = Ability.objects.get_or_create(
+                    name=ability['name'],
+                    defaults=ability
+                )
                 new_card.abilities.add(new_ability)
 
         return Response(deck_ser.data, status=status.HTTP_201_CREATED)
@@ -65,10 +73,14 @@ class DeckCardList(generics.ListAPIView):
 
     def post(self, request, pk):
         serializer = SubCardSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(deck_id=pk)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer.save(deck_id=pk)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class DeckDetail(generics.RetrieveAPIView):
@@ -83,3 +95,25 @@ class AbilityList(generics.ListCreateAPIView):
 
     queryset = Ability.objects.all()
     serializer_class = AbilitySerializer
+
+
+class AbilityDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = []
+
+    queryset = Ability.objects.all()
+    serializer_class = AbilitySerializer
+
+
+class UserList(generics.ListAPIView):
+    permission_classes = []
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    permission_classes = []
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'username'
