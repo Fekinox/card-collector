@@ -1,1 +1,1 @@
-web: daphne cardcollector.asgi:application
+web: daphne -p $PORT cardcollector.asgi:application 
