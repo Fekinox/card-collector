@@ -10,8 +10,6 @@ from rest_framework.views import Response
 
 
 class DeckList(generics.ListCreateAPIView):
-    permission_classes = []
-
     queryset = Deck.objects.all()
     serializer_class = DeckSerializer
 
@@ -50,22 +48,16 @@ class DeckList(generics.ListCreateAPIView):
 
 
 class CardList(generics.ListCreateAPIView):
-    permission_classes = []
-
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
 
 class CardDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = []
-
     queryset = Card.objects.all()
     serializer_class = CardSerializer
 
 
 class DeckCardList(generics.ListAPIView):
-    permission_classes = []
-
     serializer_class = CardSerializer
 
     def get_queryset(self):
@@ -84,36 +76,26 @@ class DeckCardList(generics.ListAPIView):
 
 
 class DeckDetail(generics.RetrieveAPIView):
-    permission_classes = []
-
     queryset = Deck.objects.all()
     serializer_class = DeckSerializer
 
 
 class AbilityList(generics.ListCreateAPIView):
-    permission_classes = []
-
     queryset = Ability.objects.all()
     serializer_class = AbilitySerializer
 
 
 class AbilityDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = []
-
     queryset = Ability.objects.all()
     serializer_class = AbilitySerializer
 
 
 class UserList(generics.ListAPIView):
-    permission_classes = []
-
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class UserDetail(generics.RetrieveAPIView):
-    permission_classes = []
-
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
